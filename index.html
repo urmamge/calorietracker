@@ -1,74 +1,13 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f6fa">
-  <title>Nutrition History</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <script src="app.js" defer></script>
-</head>
-<body>
-  <main class="shell">
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">DAILY NUTRITION TRACKER</p>
-        <h1>Your history</h1>
-      </div>
-      <button id="sign-out" class="quiet-button hidden" type="button">Sign out</button>
-    </header>
-
-    <section id="login-panel" class="panel login-panel">
-      <h2>Sign in to view your history</h2>
-      <p>Your account is private. Logging and editing are only available in the desktop app.</p>
-      <form id="login-form">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" autocomplete="username" required>
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" autocomplete="current-password" required>
-        <button class="primary-button" type="submit">Sign in</button>
-      </form>
-      <p id="login-error" class="error" role="alert"></p>
-      <p class="repo-link"><a href="https://github.com/urmamge/calorietracker" target="_blank" rel="noopener">View this project on GitHub</a></p>
-    </section>
-
-    <section id="history-panel" class="hidden">
-      <section class="panel controls">
-        <div class="period-fields">
-          <label for="weeks">Period</label>
-          <select id="weeks">
-            <option value="1">1 week</option>
-            <option value="2">2 weeks</option>
-            <option value="4" selected>4 weeks</option>
-            <option value="8">8 weeks</option>
-            <option value="12">12 weeks</option>
-            <option value="26">26 weeks</option>
-            <option value="52">52 weeks</option>
-            <option value="104">104 weeks</option>
-          </select>
-          <label for="end-date">Ending</label>
-          <input id="end-date" type="date">
-        </div>
-        <button id="refresh" class="primary-button" type="button">Show history</button>
-      </section>
-
-      <p id="status" class="status" aria-live="polite"></p>
-      <section class="metrics" aria-label="Average nutrition">
-        <article class="metric-card"><span>Average calories</span><strong id="avg-calories">—</strong><small>per calendar day</small></article>
-        <article class="metric-card"><span>Average protein</span><strong id="avg-protein">—</strong><small>per calendar day</small></article>
-        <article class="metric-card"><span>Average carbs</span><strong id="avg-carbs">—</strong><small>per calendar day</small></article>
-        <article class="metric-card"><span>Average fat</span><strong id="avg-fat">—</strong><small>per calendar day</small></article>
-      </section>
-      <section class="panel history-panel">
-        <div class="history-heading">
-          <div><h2>Daily history</h2><p id="period-label"></p></div>
-        </div>
-        <div id="history-list" class="history-list"></div>
-      </section>
-      <p class="footnote">Days before your first food entry are excluded. Later days without entries count as zero.</p>
-    </section>
-  </main>
-</body>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥗</text></svg>" />
+    <title>Nutrition History</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
