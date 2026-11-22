@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Alert, Box, Button, Group, NumberInput, Paper, ScrollArea, SimpleGrid, Stack, Table, Text, Title } from "@mantine/core";
+import { Alert, Button, Group, NumberInput, Paper, ScrollArea, SimpleGrid, Stack, Table, Text, Title } from "@mantine/core";
 import { BarChart } from "@mantine/charts";
 import { DatePickerInput } from "@mantine/dates";
 import { useDebouncedValue } from "@mantine/hooks";
-import { modals } from "@mantine/modals";
 import { IconCalendar, IconDownload, IconRefresh } from "@tabler/icons-react";
 import dayjs from "dayjs";
 import { fetchEntries, firstEntryDate, type Entry } from "./supabase.ts";
@@ -56,7 +55,7 @@ async function exportCsv() {
   URL.revokeObjectURL(a.href);
 }
 
-export function HistoryPage() {
+export function HistoryPage({ logVersion, onOpenDay }: { logVersion: number; onOpenDay: (date: string) => void }) {
   const [weeks, setWeeks] = useState<number | string>(4);
   const [end, setEnd] = useState(todayIso);
   const [debouncedWeeks] = useDebouncedValue(weeks, 300);
@@ -81,21 +80,13 @@ export function HistoryPage() {
     return () => {
       cancelled = true;
     };
-  }, [weeksValue, validWeeks, end, reload]);
+  }, [weeksValue, validWeeks, end, reload, logVersion]);
 
   const chartData = useMemo(
     () => [...(history?.days ?? [])].reverse().map((d) => ({ day: dayjs(d.date).format("D MMM"), calories: Math.round(d.calories) })),
     [history],
   );
   const avg = history?.averages;
-
-  const openDay = (day: Day) =>
-    modals.open({
-      title: <Text fw={700}>{dayjs(day.date).format("dddd D MMMM YYYY")}</Text>,
-      radius: "lg",
-      centered: true,
-      children: <DayFoods day={day} />,
-    });
 
   return (
     <Stack gap="lg">
@@ -185,7 +176,7 @@ export function HistoryPage() {
           />
         ) : (
           <Text c="dimmed" ta="center" py="xl">
-            {loading ? "Loading…" : "Log some food in the desktop app to see your history here."}
+            {loading ? "Loading…" : "Log some food to see your history here."}
           </Text>
         )}
       </Paper>
@@ -194,7 +185,7 @@ export function HistoryPage() {
         <Group justify="space-between" mb="sm">
           <Title order={4}>Daily totals</Title>
           <Text size="xs" c="dimmed">
-            Tap a day to see what you ate
+            Tap a day to open its food log
           </Text>
         </Group>
         <ScrollArea.Autosize mah={480} type="auto" offsetScrollbars>
@@ -213,7 +204,7 @@ export function HistoryPage() {
             </Table.Thead>
             <Table.Tbody>
               {history?.days.map((d) => (
-                <Table.Tr key={d.date} className="clickable-row" onClick={() => openDay(d)} c={d.foods.length ? undefined : "dimmed"}>
+                <Table.Tr key={d.date} className="clickable-row" onClick={() => onOpenDay(d.date)} c={d.foods.length ? undefined : "dimmed"}>
                   <Table.Td fw={500}>{dayjs(d.date).format("ddd D MMM YYYY")}</Table.Td>
                   <Table.Td ta="right" fw={600}>
                     {fmtKcal(d.calories)}
@@ -234,53 +225,6 @@ export function HistoryPage() {
           as 0 kcal.
         </Text>
       </Paper>
-    </Stack>
-  );
-}
-
-function DayFoods({ day }: { day: Day }) {
-  if (!day.foods.length) {
-    return (
-      <Text c="dimmed" size="sm" ta="center" py="md">
-        Nothing logged for this day.
-      </Text>
-    );
-  }
-  return (
-    <Stack gap={0}>
-      {day.foods.map((e, i) => (
-        <Box key={i} className="log-item" py="sm">
-          <Group justify="space-between" wrap="nowrap" gap="sm">
-            <Box miw={0}>
-              <Text fw={500} lineClamp={1}>
-                {e.food_name}
-              </Text>
-              <Group gap="xs" mt={2}>
-                <Text size="xs" c="dimmed">
-                  {fmtG(e.grams)} g
-                </Text>
-                {MACROS.map((m) => (
-                  <Text key={m.key} size="xs" c={`${m.color}.7`}>
-                    {m.label[0]} {fmtG(e[m.key])}
-                  </Text>
-                ))}
-              </Group>
-            </Box>
-            <Text fw={700} style={{ whiteSpace: "nowrap" }}>
-              {fmtKcal(e.calories)}{" "}
-              <Text span size="xs" c="dimmed" fw={500}>
-                kcal
-              </Text>
-            </Text>
-          </Group>
-        </Box>
-      ))}
-      <Group justify="space-between" pt="sm">
-        <Text fw={600}>Total</Text>
-        <Text fw={700} c="violet">
-          {fmtKcal(day.calories)} kcal
-        </Text>
-      </Group>
     </Stack>
   );
 }

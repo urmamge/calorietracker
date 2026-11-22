@@ -1,7 +1,7 @@
 {
   "name": "calorietracker",
   "version": "2.0.0",
-  "description": "Read-only nutrition history website for the Daily Nutrition Tracker",
+  "description": "Nutrition tracking website for the Daily Nutrition Tracker",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -22,6 +22,7 @@
     "@mantine/dates": "^9.7.3",
     "@mantine/hooks": "^9.7.3",
     "@mantine/modals": "^9.7.3",
+    "@mantine/notifications": "^9.7.3",
     "@supabase/supabase-js": "^2.118.0",
     "@tabler/icons-react": "^3.49.0",
     "dayjs": "^1.11.23",

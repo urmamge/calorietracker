@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import {
   ActionIcon,
   AppShell,
+  Box,
   Button,
   Center,
   Container,
   Group,
   Loader,
+  SegmentedControl,
   Text,
   ThemeIcon,
   Title,
@@ -14,14 +16,27 @@ import {
   useComputedColorScheme,
   useMantineColorScheme,
 } from "@mantine/core";
+import { useLocalStorage } from "@mantine/hooks";
 import { IconLogout, IconMoon, IconSalad, IconSun } from "@tabler/icons-react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase.ts";
 import { HistoryPage } from "./HistoryPage.tsx";
+import { DayView } from "./components/DayView.tsx";
+import { todayIso } from "./format.ts";
 import { Login } from "./Login.tsx";
+
+type View = "log" | "history";
+
+const VIEWS = [
+  { value: "log", label: "Food log" },
+  { value: "history", label: "History & averages" },
+];
 
 export function App() {
   const [session, setSession] = useState<Session | null | undefined>(undefined);
+  const [view, setView] = useLocalStorage<View>({ key: "ndt-view", defaultValue: "log" });
+  const [date, setDate] = useState(todayIso);
+  const [logVersion, setLogVersion] = useState(0);
   const { toggleColorScheme } = useMantineColorScheme();
   const scheme = useComputedColorScheme("light");
 
@@ -45,13 +60,14 @@ export function App() {
                   Daily Nutrition Tracker
                 </Title>
                 <Text size="xs" c="dimmed" visibleFrom="sm">
-                  Your history, synced from the desktop app
+                  Search foods · Log portions · Review your history
                 </Text>
               </div>
             </Group>
             <Group gap="sm" wrap="nowrap">
               {session && (
                 <>
+                  <SegmentedControl value={view} onChange={(v) => setView(v as View)} data={VIEWS} visibleFrom="md" />
                   <Button variant="default" leftSection={<IconLogout size={16} />} onClick={() => supabase.auth.signOut()} visibleFrom="sm">
                     Sign out
                   </Button>
@@ -79,7 +95,23 @@ export function App() {
               <Loader type="dots" />
             </Center>
           ) : session ? (
-            <HistoryPage />
+            <>
+              <SegmentedControl value={view} onChange={(v) => setView(v as View)} data={VIEWS} fullWidth hiddenFrom="md" mb="md" />
+              {/* Both views stay mounted so search results survive switching tabs. */}
+              <Box display={view === "log" ? undefined : "none"}>
+                <DayView date={date} onDateChange={setDate} onLogChanged={() => setLogVersion((v) => v + 1)} />
+              </Box>
+              <Box display={view === "history" ? undefined : "none"}>
+                <HistoryPage
+                  logVersion={logVersion}
+                  onOpenDay={(d) => {
+                    setDate(d);
+                    setView("log");
+                    window.scrollTo({ top: 0 });
+                  }}
+                />
+              </Box>
+            </>
           ) : (
             <Login />
           )}

@@ -28,9 +28,9 @@ export function Login() {
         >
           <Stack gap="md">
             <div>
-              <Title order={3}>Sign in to view your history</Title>
+              <Title order={3}>Sign in to your tracker</Title>
               <Text size="sm" c="dimmed" mt={4}>
-                Your account is private. Logging and editing are only available in the desktop app.
+                Log food and review your history from any device. Your account is private.
               </Text>
             </div>
             <TextInput label="Email" type="email" autoComplete="username" required value={email} onChange={(e) => setEmail(e.currentTarget.value)} />

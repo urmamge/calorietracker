@@ -27,3 +27,10 @@
 .log-item .remove:focus-visible {
   opacity: 1;
 }
+
+/* Touch screens have no hover, so keep the remove buttons visible there. */
+@media (hover: none) {
+  .log-item .remove {
+    opacity: 1;
+  }
+}
