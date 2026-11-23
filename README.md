@@ -23,3 +23,17 @@ row-level security means each account can only read and change its own entries.
 Saved custom foods live in a `custom_foods` table so they follow you between devices. Create it once by running
 [`supabase/custom_foods.sql`](supabase/custom_foods.sql) in the Supabase SQL editor. Until then, searching and logging
 still work; only the My foods tab asks for the setup.
+
+## Food search relay
+
+Searches go to the newer Open Food Facts search service first, because it is much faster and less overloaded than the
+classic API. That service sends no CORS headers, so the browser reaches it through a small Supabase Edge Function,
+[`supabase/functions/off-search`](supabase/functions/off-search/index.ts), which only relays its public `search` and
+`autocomplete` endpoints. Deploy it (and redeploy after changing it) with:
+
+```
+npx supabase login
+npx supabase functions deploy off-search --project-ref qcowxfnoboljphfewmxu --no-verify-jwt
+```
+
+If the relay is unavailable, searches fall back to the classic API with automatic retries.

@@ -1,0 +1,4 @@
+# The website calls this with the publishable key, which is not a JWT, so JWT verification must be off. The function
+# only relays public Open Food Facts search results.
+[functions.off-search]
+verify_jwt = false

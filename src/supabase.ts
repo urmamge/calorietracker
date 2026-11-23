@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { type Food, nutrientsFromPer100 } from "./format.ts";
 
 // The publishable (anon) key is meant for browsers; row-level security limits each account to its own entries.
-const SUPABASE_URL = "https://qcowxfnoboljphfewmxu.supabase.co";
+export const SUPABASE_URL = "https://qcowxfnoboljphfewmxu.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_KV89o3oHC2HSNirNqhLqTg_lFeq2_18";
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

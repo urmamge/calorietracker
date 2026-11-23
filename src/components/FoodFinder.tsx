@@ -252,7 +252,7 @@ function OnlineSearch({
 
       {error && (
         <Alert color="red" variant="light" icon={<IconAlertTriangle size={18} />} title="Online search failed">
-          {error} Check your internet connection and try again.
+          {error} Check your connection, or try again in a moment.
         </Alert>
       )}
 
